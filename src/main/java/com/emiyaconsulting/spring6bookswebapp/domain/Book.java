@@ -2,7 +2,7 @@ package com.emiyaconsulting.spring6bookswebapp.domain;
 
 import jakarta.persistence.*;
 
-import java.util.Objects;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -13,11 +13,11 @@ public class Book {
     private String title;
     private String isbn;
 
-    @ManyToMany(mappedBy = "books")
+    @ManyToMany
     @JoinTable(name = "author_book",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
-    private Set<Author> authors;
+    private Set<Author> authors = new HashSet<>();
 
     public Set<Author> getAuthors() {
         return authors;
@@ -67,11 +67,15 @@ public class Book {
         if (o == null || getClass() != o.getClass()) return false;
 
         Book book = (Book) o;
-        return Objects.equals(id, book.id);
+        return id.equals(book.id) && title.equals(book.title) && isbn.equals(book.isbn) && authors.equals(book.authors);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        int result = id.hashCode();
+        result = 31 * result + title.hashCode();
+        result = 31 * result + isbn.hashCode();
+        result = 31 * result + authors.hashCode();
+        return result;
     }
 }

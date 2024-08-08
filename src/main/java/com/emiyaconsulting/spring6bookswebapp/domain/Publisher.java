@@ -2,7 +2,6 @@ package com.emiyaconsulting.spring6bookswebapp.domain;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -17,8 +16,8 @@ public class Publisher {
     private String state;
     private String zip;
 
-    @ManyToMany
-    private Set<Book> books = new HashSet<>();
+    @OneToMany(mappedBy = "publisher")
+    private Set<Book> books;
 
     public Long getId() {
         return id;

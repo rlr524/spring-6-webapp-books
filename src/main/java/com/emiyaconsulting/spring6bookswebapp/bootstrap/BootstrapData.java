@@ -9,6 +9,9 @@ import com.emiyaconsulting.spring6bookswebapp.repositories.PublisherRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Component
 public class BootstrapData implements CommandLineRunner {
 
@@ -43,26 +46,38 @@ public class BootstrapData implements CommandLineRunner {
         three.setTitle("Three Body Problem");
         three.setIsbn("978-0765382030");
 
-        Publisher tor = new Publisher();
-        tor.setPublisherName("Tor Books");
-
-        Publisher vintage = new Publisher();
-        vintage.setPublisherName("Vintage Press");
-
         Author cixinSaved = authorRepository.save(cixin);
         Book threeSaved = bookRepository.save(three);
 
-        Publisher torSaved = publisherRepository.save(tor);
-        Publisher vintageSaved = publisherRepository.save(vintage);
+        Set<Author> threeAuthors = new HashSet<>();
+        threeAuthors.add(cixinSaved);
+
+        Set<Author> oneqAuthors = new HashSet<>();
+        oneqAuthors.add(harukiSaved);
+
+
+        Publisher tor = new Publisher();
+        tor.setPublisherName("Tor Books");
+        tor.setAddress("123 Main");
+        Publisher savedPubTor = publisherRepository.save(tor);
+
+        Publisher vintage = new Publisher();
+        vintage.setPublisherName("Vintage Press");
+        vintage.setAddress("456 Main");
+        Publisher savedPubVintage = publisherRepository.save(vintage);
+
+        oneqSaved.setPublisher(savedPubVintage);
+        threeSaved.setPublisher(savedPubTor);
+        oneqSaved.setAuthors(oneqAuthors);
+        threeSaved.setAuthors(threeAuthors);
 
         harukiSaved.getBooks().add(oneqSaved);
         cixinSaved.getBooks().add(threeSaved);
 
-        torSaved.getBooks().add(threeSaved);
-        vintageSaved.getBooks().add(oneqSaved);
-
         authorRepository.save(harukiSaved);
         authorRepository.save(cixinSaved);
+        bookRepository.save(oneqSaved);
+        bookRepository.save(threeSaved);
 
         System.out.printf("Author count: %d\n", authorRepository.count());
         System.out.printf("Book count: %d\n", bookRepository.count());

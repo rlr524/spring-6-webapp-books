@@ -92,17 +92,13 @@ public class Book {
         if (o == null || getClass() != o.getClass()) return false;
 
         Book book = (Book) o;
-        return id.equals(book.id) && title.equals(book.title)
-                && Objects.equals(format, book.format)
-                && Objects.equals(isbn, book.isbn)
-                && Objects.equals(authors, book.authors)
-                && Objects.equals(publisher, book.publisher);
+        return id.equals(book.id) && Objects.equals(title, book.title) && Objects.equals(format, book.format) && Objects.equals(isbn, book.isbn) && Objects.equals(authors, book.authors) && Objects.equals(publisher, book.publisher);
     }
 
     @Override
     public int hashCode() {
         int result = id.hashCode();
-        result = 31 * result + title.hashCode();
+        result = 31 * result + Objects.hashCode(title);
         result = 31 * result + Objects.hashCode(format);
         result = 31 * result + Objects.hashCode(isbn);
         result = 31 * result + Objects.hashCode(authors);

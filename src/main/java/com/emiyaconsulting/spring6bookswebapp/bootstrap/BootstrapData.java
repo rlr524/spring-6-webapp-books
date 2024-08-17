@@ -9,9 +9,6 @@ import com.emiyaconsulting.spring6bookswebapp.repositories.PublisherRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Component
 public class BootstrapData implements CommandLineRunner {
 
@@ -27,6 +24,7 @@ public class BootstrapData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        // Create 1Q84, Haruki Murakami and save to repos
         Author haruki = new Author();
         haruki.setFirstName("Haruki");
         haruki.setLastName("Murakami");
@@ -38,6 +36,7 @@ public class BootstrapData implements CommandLineRunner {
         Author harukiSaved = authorRepository.save(haruki);
         Book oneqSaved = bookRepository.save(oneq);
 
+        // Create Three Body Problem, Cixin Liu and save to repos
         Author cixin = new Author();
         cixin.setFirstName("Cixin");
         cixin.setLastName("Liu");
@@ -49,31 +48,43 @@ public class BootstrapData implements CommandLineRunner {
         Author cixinSaved = authorRepository.save(cixin);
         Book threeSaved = bookRepository.save(three);
 
-        Set<Author> threeAuthors = new HashSet<>();
-        threeAuthors.add(cixinSaved);
+        // Commit the author and book records
+        cixinSaved.getBooks().add(threeSaved);
+        harukiSaved.getBooks().add(oneqSaved);
+        threeSaved.getAuthors().add(cixinSaved);
+        oneqSaved.getAuthors().add(harukiSaved);
 
-        Set<Author> oneqAuthors = new HashSet<>();
-        oneqAuthors.add(harukiSaved);
-
+        // Create the publishers
+        Publisher vintage = new Publisher();
+        vintage.setPublisherName("Vintage Press");
+        vintage.setAddress("456 Main");
 
         Publisher tor = new Publisher();
         tor.setPublisherName("Tor Books");
         tor.setAddress("123 Main");
-        Publisher savedPubTor = publisherRepository.save(tor);
 
-        Publisher vintage = new Publisher();
-        vintage.setPublisherName("Vintage Press");
-        vintage.setAddress("456 Main");
+        // Save the pblishers to their repos and commit the publishers to their books
         Publisher savedPubVintage = publisherRepository.save(vintage);
-
+        Publisher savedPubTor = publisherRepository.save(tor);
         oneqSaved.setPublisher(savedPubVintage);
         threeSaved.setPublisher(savedPubTor);
-        oneqSaved.setAuthors(oneqAuthors);
-        threeSaved.setAuthors(threeAuthors);
 
-        harukiSaved.getBooks().add(oneqSaved);
-        cixinSaved.getBooks().add(threeSaved);
 
+        // Create the hash sets for the author objects
+//        Set<Author> threeAuthors = new HashSet<>();
+//        threeAuthors.add(cixinSaved);
+//        Set<Author> oneqAuthors = new HashSet<>();
+//        oneqAuthors.add(harukiSaved);
+
+        // Link the publishers and authors to the books
+
+//        oneqSaved.setAuthors(oneqAuthors);
+//        threeSaved.setAuthors(threeAuthors);
+
+//        harukiSaved.getBooks().add(oneqSaved);
+//        cixinSaved.getBooks().add(threeSaved);
+
+        // Commit the author and book data to the db
         authorRepository.save(harukiSaved);
         authorRepository.save(cixinSaved);
         bookRepository.save(oneqSaved);
